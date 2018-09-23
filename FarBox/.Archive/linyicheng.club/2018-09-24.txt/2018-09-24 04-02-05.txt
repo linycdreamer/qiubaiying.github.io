@@ -1,4 +1,10 @@
 ---
+date:
+status: public
+title:
+---
+
+---
 layout:     post
 title:      ROS基础教程
 subtitle:   ROS学习之路
@@ -21,7 +27,7 @@ tags:
    cd ~/mudu/
    catkin_make
    source devel/setup.bash 
-   ```
+   (```
    这样我们就新建了一个catkin工作空间
    2. 创建catkin包
    ```
@@ -32,33 +38,26 @@ tags:
    ```
    这样我们就成功创建了一个包含std_msgs rospy roscpp的catkin包，接下来我们验证一下是否成功
    输入
-   ```
-   rospack depends1 robot
-   ```
+   `rospack depends1 robot`
    如果出现，说明创建成功了。你可以继续下面的操作，如果不行只能重新来一次，可能某一步出错了，也可以参考维基百科
    ```
    ~/mudu$ rospack depends1 robot
    roscpp
    rospy
    std_msgs
-   ``` 
----
-### 编译ros程序包 
-   1. 这一步十分便捷，只需要cd到最外层的目录下，然后
    ```
-  catkin_make
-  ```
-   2. 输入命令ls出现三个文件夹，如果出错请确定当前已经source过。
+### 编译ros程序包
+   这一步十分便捷，只需要cd到最外层的目录下，然后
+   `catkin_make`
+   输入命令ls出现三个文件夹，如果出错请确定当前已经source过。
    ```
    ls
    build  devel  src
    ```
----
 ### 创建msg和srv
-   1. 创建msg  
-   进入robot路径  
-   ```
-  roscd robot  ```  
+   1. 创建msg
+   进入robot路径
+   `roscd robot`
    创建一个Num.msg文件
    ```
    mkdir msg
@@ -97,8 +96,7 @@ tags:
    )
    ```
    现在可以运行一下，观察是否正确
-   ```
-rosmsg show Num```
+   `rosmsg show Num`
    出现下面的结果说明正确
    ```
    ~/robochengzi/src/robot$ rosmsg show Num
@@ -111,8 +109,7 @@ rosmsg show Num```
    mkdir srv 
    ```
    这次我们使用复制的方式
-   ```
-roscp rospy_tutorials AddTwoInts.srv srv/AddTwoInts.srv```
+   `roscp rospy_tutorials AddTwoInts.srv srv/AddTwoInts.srv`
    同样我们要更改Cmakelist文件
    找到如下代码
    ```
@@ -132,22 +129,19 @@ roscp rospy_tutorials AddTwoInts.srv srv/AddTwoInts.srv```
    ```
    下面检验一下我们的srv文件
    输入
+   `rossrv show robot/AddTwoInts`
+   如果看见
    ```
-  rossrv show robot/AddTwoInts```
-   如果看见   
-   ```
-   ~/mudu/src/robot$ rossrv show robot/AddTwoInts 
+   ~/robochengzi/src/robot$ rossrv show robot/AddTwoInts 
    int64 a
    int64 b
-   --  
+   ---
    int64 sum
    ```
    说明正常
----
 ###编写简单的Publisher和Subscriber
    1. 首先，进入目录新建一个src文件夹（如果没有source先source一下）
-   ```
-mkdir -p src```
+   `mkdir -p src`
    在src文件夹内新建一个文件talker.cpp
    ```
    cd src
@@ -195,40 +189,38 @@ int main(int argc,char **argv)
 }
 ```
    2. 编写Subscriber 
-   和之前一样在src中新建一个src/listener.cpp文件  
-   >touch listener.cpp
-  
+   和之前一样在src中新建一个src/listener.cpp文件
+   `touch listener.cpp`
    同样我们在listener.cpp里面写入下面的代码
-```
-  #include "ros/ros.h"
-  #include "std_msgs/Sring.h"
-  //回调函数，在接收到消息后调用
-  void chatterCallback(const std_msgs::String::ConstPtr& msg)
-  {
-      ROS_INFO("I heard: [%s]",msg->data.c_str())
-  }
- 
-  int main(int argc,char **argv)
-  {
-      ros::init(argc,argv,"listener");
-      ros::NodeHandle n;
-  //在接收到消息时调用chatterCallback函数
-      ros::Subscriber sub =n.subscribe("chatter",1000,chatterCallback);
-  //没有接收到消息时，一直循环
-      ros::spin();
-      return 0;
-  } 
-```  
+   ```
+#include "ros/ros.h"
+#include "std_msgs/Sring.h"
+//回调函数，在接收到消息后调用
+void chatterCallback(const std_msgs::String::ConstPtr& msg)
+{
+    ROS_INFO("I heard: [%s]",msg->data.c_str())
+}
+
+int main(int argc,char **argv)
+{
+    ros::init(argc,argv,"listener");
+    ros::NodeHandle n;
+//在接收到消息时调用chatterCallback函数
+    ros::Subscriber sub =n.subscribe("chatter",1000,chatterCallback);
+//没有接收到消息时，一直循环
+    ros::spin();
+    return 0;
+}   
+   ```
    现在万事具备，只要编译一下就好  
    ```
    cd ~/mudu/
    catkin_make
    ```
 ### 执行Publisher和Subscriber
-   * 好,激动人心的一步到了，之前做的那么多终于要拿出来运行了
+   好,激动人心的一步到了，之前做的那么多终于要拿出来运行了
    首先运行ros（这一步不成功是安装的问题，问题有很多种先百度解决）
-   ```
-roscore```
+   `roscore`
    打开新的终端
    首先source一下然后运行程序
    ```
@@ -266,9 +258,8 @@ roscore```
 [ INFO] [1517237548.555806475]: I heard: [hello world 2214]
 [ INFO] [1517237548.655804706]: I heard: [hello world 2215]
    ```
-----
 ### 编写简单的Service和Client
-   * 和上面一样我们在src文件里面新建两个文件 add_two_ints_server.cpp 和add_two_ints_client.cpp
+   和上面一样我们在src文件里面新建两个文件 add_two_ints_server.cpp 和add_two_ints_client.cpp
    ```
    cd src
    touch add_two_ints_server.cpp
@@ -336,26 +327,24 @@ int main(int argc,char **argv)
    最后，我们在Cmakelist里面加上这两个文件
    在文件的最下面加上
    ```
-  add_executable(add_two_ints_server src/add_two_ints_server.cpp)
-  target_link_libraries(add_two_ints_server ${catkin_LIBRARIES})
-  add_dependencies(add_two_ints_server beginner_tutorials_gencpp)
+add_executable(add_two_ints_server src/add_two_ints_server.cpp)
+target_link_libraries(add_two_ints_server ${catkin_LIBRARIES})
+add_dependencies(add_two_ints_server beginner_tutorials_gencpp)
 
-  add_executable(add_two_ints_client src/add_two_ints_client.cpp)
-  target_link_libraries(add_two_ints_client ${catkin_LIBRARIES})
-  add_dependencies(add_two_ints_client beginner_tutorials_gencpp)
+add_executable(add_two_ints_client src/add_two_ints_client.cpp)
+target_link_libraries(add_two_ints_client ${catkin_LIBRARIES})
+add_dependencies(add_two_ints_client beginner_tutorials_gencpp)
    ```
    编译一下
-   ```
-   catkin_make```
+   ` catkin_make`
 ### 执行Service和Client
    首先，运行roscore
-   ```
-   roscore```
+   `roscore`
    然后启动两个节点
-   >rosrun robot add_two_ints_serve  
-   >rosrun robot add_two_ints_client 2 4  
+   `rosrun robot add_two_ints_serve`
+   `rosrun robot add_two_ints_client 2 4`
    这两行命令必须要在两个新的终端内执行，在每个新终端都必须加上source 命令，
-   >source ./devel/setup.bash  
+   `source ./devel/setup.bash`
    最后，如果它如愿的返回答案为6的话，那么恭喜你完成了基础部分的教学。
    其实，最好的教程是官网的维基，我们的博客只能算是过来人的一种经验，后续我们继续学习move_base 包，我们一起从零开始做一个小激光slam机器人出来。
 
