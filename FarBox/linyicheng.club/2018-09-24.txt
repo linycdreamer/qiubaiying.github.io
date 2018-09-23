@@ -1,6 +1,0 @@
----
-date:
-status: public
-title:
----
-
